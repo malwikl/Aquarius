@@ -83,7 +83,7 @@ void unrecognized()
 }
 
 
-void process_set_command()
+void process_get_command()
 {
   char *arg;
   arg = SCmd.next();    // Get the next argument from the SerialCommand object buffer
@@ -91,9 +91,21 @@ void process_set_command()
   if (arg != NULL)      // As long as it existed, take it
   {
     if (strcmp(arg, "DHT") == 0) {
-      Serial.println(arg);
-      arg = SCmd.next();
-      Serial.println(arg);
+      float h = dht.readHumidity();     //Luftfeuchte auslesen
+      float t = dht.readTemperature();  //Temperatur auslesen
+      if (isnan(t) || isnan(h))
+      {
+        Serial.println("DHT22 konnte nicht ausgelesen werden");
+      }
+      else
+      {
+        Serial.print("Luftfeuchte: ");
+        Serial.print(h);
+        Serial.print(" %\t");
+        Serial.print("Temperatur: ");
+        Serial.print(t);
+        Serial.println(" C");
+      }
     }
     if (strcmp(arg, "IT") == 0) {
       Serial.println(arg);
@@ -107,7 +119,7 @@ void process_set_command()
 }
 
 
-void process_get_command()
+void process_set_command()
 {
   int aNumber;
   char *arg;
