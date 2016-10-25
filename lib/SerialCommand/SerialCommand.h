@@ -1,22 +1,22 @@
-/******************************************************************************* 
+/*******************************************************************************
 SerialCommand - An Arduino library to tokenize and parse commands received over
-a serial port. 
+a serial port.
 Copyright (C) 2011-2013 Steven Cogswell  <steven.cogswell@gmail.com>
 http://awtfy.com
 
-Version 20131021A.   
+Version 20131021A.
 
 Version History:
 May 11 2011 - Initial version
 May 13 2011 -	Prevent overwriting bounds of SerialCommandCallback[] array in addCommand()
 			defaultHandler() for non-matching commands
-Mar 2012 - Some const char * changes to make compiler happier about deprecated warnings.  
-           Arduino 1.0 compatibility (Arduino.h header) 
+Mar 2012 - Some const char * changes to make compiler happier about deprecated warnings.
+           Arduino 1.0 compatibility (Arduino.h header)
 Oct 2013 - SerialCommand object can be created using a SoftwareSerial object, for SoftwareSerial
-           support.  Requires #include <SoftwareSerial.h> in your sketch even if you don't use 
-           a SoftwareSerial port in the project.  sigh.   See Example Sketch for usage. 
+           support.  Requires #include <SoftwareSerial.h> in your sketch even if you don't use
+           a SoftwareSerial port in the project.  sigh.   See Example Sketch for usage.
 Oct 2013 - Conditional compilation for the SoftwareSerial support, in case you really, really
-           hate it and want it removed.  
+           hate it and want it removed.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -43,12 +43,12 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 // If you want to use SerialCommand with the hardware serial port only, and want to disable
 // SoftwareSerial support, and thus don't have to use "#include <SoftwareSerial.h>" in your
-// sketches, then uncomment this define for SERIALCOMMAND_HARDWAREONLY, and comment out the 
-// corresponding #undef line.  
+// sketches, then uncomment this define for SERIALCOMMAND_HARDWAREONLY, and comment out the
+// corresponding #undef line.
 //
-// You don't have to use SoftwareSerial features if this is not defined, you can still only use 
-// the Hardware serial port, just that this way lets you get out of having to include 
-// the SoftwareSerial.h header. 
+// You don't have to use SoftwareSerial features if this is not defined, you can still only use
+// the Hardware serial port, just that this way lets you get out of having to include
+// the SoftwareSerial.h header.
 //#define SERIALCOMMAND_HARDWAREONLY 1
 #undef SERIALCOMMAND_HARDWAREONLY
 
@@ -56,8 +56,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 #warning "Warning: Building SerialCommand without SoftwareSerial Support"
 #endif
 
-#ifndef SERIALCOMMAND_HARDWAREONLY 
-#include <SoftwareSerial.h>  
+#ifndef SERIALCOMMAND_HARDWAREONLY
+#include <SoftwareSerial.h>
 #endif
 
 #include <string.h>
@@ -80,12 +80,12 @@ class SerialCommand
 
 		void clearBuffer();   // Sets the command buffer to all '\0' (nulls)
 		char *next();         // returns pointer to next token found in command buffer (for getting arguments to commands)
-		void readSerial();    // Main entry point.  
+		void readSerial();    // Main entry point.
 		void addCommand(const char *, void(*)());   // Add commands to processing dictionary
-		void addDefaultHandler(void (*function)());    // A handler to call when no valid command received. 
-	
+		void addDefaultHandler(void (*function)());    // A handler to call when no valid command received.
+
 	private:
-		char inChar;          // A character read from the serial stream 
+		char inChar;          // A character read from the serial stream
 		char buffer[SERIALCOMMANDBUFFER];   // Buffer of stored characters while waiting for terminator character
 		int  bufPos;                        // Current position in the buffer
 		char delim[MAXDELIMETER];           // null-terminated list of character to be used as delimeters for tokenizing (default " ")
@@ -98,9 +98,9 @@ class SerialCommand
 		} SerialCommandCallback;            // Data structure to hold Command/Handler function key-value pairs
 		int numCommand;
 		SerialCommandCallback CommandList[MAXSERIALCOMMANDS];   // Actual definition for command/handler array
-		void (*defaultHandler)();           // Pointer to the default handler function 
+		void (*defaultHandler)();           // Pointer to the default handler function
 		int usingSoftwareSerial;            // Used as boolean to see if we're using SoftwareSerial object or not
-		#ifndef SERIALCOMMAND_HARDWAREONLY 
+		#ifndef SERIALCOMMAND_HARDWAREONLY
 		SoftwareSerial *SoftSerial;         // Pointer to a user-created SoftwareSerial object
 		#endif
 };

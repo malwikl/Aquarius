@@ -2,6 +2,8 @@
 #include "DHT.h"
 #include <NewRemoteTransmitter.h>
 #include <NewRemoteReceiver.h>
+#include <SoftwareSerial.h>
+#include <SerialCommand.h>
 
 #define DHTPIN 9
 #define DHTTYPE DHT21 //DHT11, DHT21, DHT22
@@ -13,6 +15,7 @@ DHT dht(DHTPIN, DHTTYPE);
 unsigned long i_time;
 unsigned long mygroup=14360270UL;
 boolean b_debug=false;
+SerialCommand SCmd;
 
 void debuglog(char s_message[]){
   if(b_debug){
@@ -70,17 +73,79 @@ void showCode(NewRemoteCode receivedCode) {
   Serial.println("us.");
 }
 
+
+void unrecognized()
+{
+  Serial.println("What? You can try the following");
+  Serial.println("set <device> <state>");
+  Serial.println("get <device> <attr>");
+
+}
+
+
+void process_set_command()
+{
+  char *arg;
+  arg = SCmd.next();    // Get the next argument from the SerialCommand object buffer
+
+  if (arg != NULL)      // As long as it existed, take it
+  {
+    if (strcmp(arg, "DHT") == 0) {
+      Serial.println(arg);
+      arg = SCmd.next();
+      Serial.println(arg);
+    }
+    if (strcmp(arg, "IT") == 0) {
+      Serial.println(arg);
+      arg = SCmd.next();
+      Serial.println(arg);
+    }
+  }
+  else {
+    Serial.println("Hello, whoever you are");
+  }
+}
+
+
+void process_get_command()
+{
+  int aNumber;
+  char *arg;
+
+  Serial.println("We're in process_command");
+  arg = SCmd.next();
+  if (arg != NULL)
+  {
+    aNumber=atoi(arg);    // Converts a char string to an integer
+    Serial.print("First argument was: ");
+    Serial.println(aNumber);
+  }
+  else {
+    Serial.println("No arguments");
+  }
+
+  arg = SCmd.next();
+  if (arg != NULL)
+  {
+    aNumber=atol(arg);
+    Serial.print("Second argument was: ");
+    Serial.println(aNumber);
+  }
+  else {
+    Serial.println("No second argument");
+  }
+
+}
+
+
 void setup() {
 
   Serial.begin(9600);
-  Serial.println("----------- Start Serial Monitor ---------");
-  Serial.println("Type 0 or 1 to control the LED");
-  Serial.println("Type q or a to control switch 0");
-  Serial.println("Type w or s to control switch 0");
-  Serial.println("Type e or d to control switch 0");
-  Serial.println("Type t to show temperature and humidity");
-  Serial.println("Type x to turn debuging on or off");
-  Serial.println();
+
+  SCmd.addCommand("get",process_get_command);  // Converts two arguments to integers and echos them back
+  SCmd.addCommand("set",process_set_command);  // Converts two arguments to integers and echos them back
+  SCmd.addDefaultHandler(unrecognized);  // Handler for command that isn't matched  (says "What?")
+  Serial.println("Ready");
   pinMode(ledPin, OUTPUT);
   dht.begin();
   NewRemoteReceiver::init(0, 2, showCode);
@@ -88,84 +153,86 @@ void setup() {
 }
 
 void loop() {
-  if (Serial.available() > 0) {
+  SCmd.readSerial();
+  /*if (Serial.available() > 0) {
 
-    incomingByte = Serial.read();
+  incomingByte = Serial.read();
 
-    if(b_debug) {
-    Serial.print(incomingByte);
-    Serial.print("        ");
-    Serial.print(incomingByte, HEX);
-    Serial.print("       ");
-    Serial.print(char(incomingByte));
-    Serial.println();
-    }
-    if (incomingByte == '1')
-    {
-      digitalWrite(ledPin, HIGH);
-      debuglog("LED ist eingeschaltet!");
-    }
+  if(b_debug) {
+  Serial.print(incomingByte);
+  Serial.print("        ");
+  Serial.print(incomingByte, HEX);
+  Serial.print("       ");
+  Serial.print(char(incomingByte));
+  Serial.println();
+}
+if (incomingByte == '1')
+{
+digitalWrite(ledPin, HIGH);
+debuglog("LED ist eingeschaltet!");
+}
 
-    if (incomingByte == '0')
-    {
-      digitalWrite(ledPin, LOW);
-      debuglog("LED ist ausgeschaltet!");
-    }
-    if (incomingByte == 'q')
-    {
-        sendCode(mygroup, 0, true);
-    }
-    if (incomingByte == 'a')
-    {
-      sendCode(mygroup, 0, false);
-    }
-    if (incomingByte == 'w')
-    {
-      sendCode(mygroup, 1, true);
-    }
-    if (incomingByte == 's')
-    {
-      sendCode(mygroup, 1, false);
-    }
-    if (incomingByte == 'e')
-    {
-      sendCode(mygroup, 2, true);
-    }
-    if (incomingByte == 'd')
-    {
-      sendCode(mygroup, 2, false);
-    }
-    if (incomingByte == 'x')
-    {
-      if (b_debug){
-        b_debug = false;
-      } else {
-        b_debug = true;
-      }
-    }
+if (incomingByte == '0')
+{
+digitalWrite(ledPin, LOW);
+debuglog("LED ist ausgeschaltet!");
+}
+if (incomingByte == 'q')
+{
+sendCode(mygroup, 0, true);
+}
+if (incomingByte == 'a')
+{
+sendCode(mygroup, 0, false);
+}
+if (incomingByte == 'w')
+{
+sendCode(mygroup, 1, true);
+}
+if (incomingByte == 's')
+{
+sendCode(mygroup, 1, false);
+}
+if (incomingByte == 'e')
+{
+sendCode(mygroup, 2, true);
+}
+if (incomingByte == 'd')
+{
+sendCode(mygroup, 2, false);
+}
+if (incomingByte == 'x')
+{
+if (b_debug){
+b_debug = false;
+} else {
+b_debug = true;
+}
+}
 
-    if (incomingByte == 't')
-    {
-      float h = dht.readHumidity();     //Luftfeuchte auslesen
-      float t = dht.readTemperature();  //Temperatur auslesen
-      if (isnan(t) || isnan(h))
-      {
-        Serial.println("DHT22 konnte nicht ausgelesen werden");
-      }
-      else
-      {
-        Serial.print("Luftfeuchte: ");
-        Serial.print(h);
-        Serial.print(" %\t");
-        Serial.print("Temperatur: ");
-        Serial.print(t);
-        Serial.println(" C");
-      }
-    }
-    i_time=millis();
-    if(b_debug) {
-    Serial.print("Runtime: ");
-    Serial.println(i_time);
-  }
-  }
+if (incomingByte == 't')
+{
+float h = dht.readHumidity();     //Luftfeuchte auslesen
+float t = dht.readTemperature();  //Temperatur auslesen
+if (isnan(t) || isnan(h))
+{
+Serial.println("DHT22 konnte nicht ausgelesen werden");
+}
+else
+{
+Serial.print("Luftfeuchte: ");
+Serial.print(h);
+Serial.print(" %\t");
+Serial.print("Temperatur: ");
+Serial.print(t);
+Serial.println(" C");
+}
+}
+i_time=millis();
+if(b_debug) {
+Serial.print("Runtime: ");
+Serial.println(i_time);
+}
+}
+*/
 }
