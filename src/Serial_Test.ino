@@ -83,7 +83,7 @@ void unrecognized()
 }
 
 
-void process_get_command()
+void process_getreading_command()
 {
   char *arg;
   arg = SCmd.next();    // Get the next argument from the SerialCommand object buffer
@@ -95,31 +95,47 @@ void process_get_command()
       float t = dht.readTemperature();  //Temperatur auslesen
       if (isnan(t) || isnan(h))
       {
-        Serial.println("DHT22 konnte nicht ausgelesen werden");
+        Serial.println("READING DHT DHT_READ_ERROR");
       }
       else
       {
-        Serial.print("Luftfeuchte: ");
+        Serial.print("READING DHT Humidity ");
         Serial.print(h);
         Serial.print(" %\t");
-        Serial.print("Temperatur: ");
-        Serial.print(t);
-        Serial.println(" C");
+        Serial.print("READING DHT Temperature ");
+        Serial.println(t);
       }
     }
-    if (strcmp(arg, "IT") == 0) {
+    else if (strcmp(arg, "IT1") == 0) {
       Serial.println(arg);
       arg = SCmd.next();
       Serial.println(arg);
     }
+    else if (strcmp(arg, "IT2") == 0) {
+      Serial.println(arg);
+      arg = SCmd.next();
+      Serial.println(arg);
+    }
+    else if (strcmp(arg, "IT3") == 0) {
+      Serial.println(arg);
+      arg = SCmd.next();
+      Serial.println(arg);
+    }
+    else {
+      Serial.println("INFO Unkown Device");
+    }
   }
   else {
-    Serial.println("Hello, whoever you are");
+    Serial.println("INFO No Device specified");
   }
 }
 
+void process_getstate_command()
+{
 
-void process_set_command()
+}
+
+void process_setstate_command()
 {
   int aNumber;
   char *arg;
@@ -154,8 +170,9 @@ void setup() {
 
   Serial.begin(9600);
 
-  SCmd.addCommand("get",process_get_command);  // Converts two arguments to integers and echos them back
-  SCmd.addCommand("set",process_set_command);  // Converts two arguments to integers and echos them back
+  SCmd.addCommand("getstate",process_getstate_command);  // Converts two arguments to integers and echos them back
+  SCmd.addCommand("setstate",process_setstate_command);  // Converts two arguments to integers and echos them back
+  SCmd.addCommand("getreading",process_getreading_command);  // Converts two arguments to integers and echos them back
   SCmd.addDefaultHandler(unrecognized);  // Handler for command that isn't matched  (says "What?")
   Serial.println("Ready");
   pinMode(ledPin, OUTPUT);
@@ -166,85 +183,4 @@ void setup() {
 
 void loop() {
   SCmd.readSerial();
-  /*if (Serial.available() > 0) {
-
-  incomingByte = Serial.read();
-
-  if(b_debug) {
-  Serial.print(incomingByte);
-  Serial.print("        ");
-  Serial.print(incomingByte, HEX);
-  Serial.print("       ");
-  Serial.print(char(incomingByte));
-  Serial.println();
-}
-if (incomingByte == '1')
-{
-digitalWrite(ledPin, HIGH);
-debuglog("LED ist eingeschaltet!");
-}
-
-if (incomingByte == '0')
-{
-digitalWrite(ledPin, LOW);
-debuglog("LED ist ausgeschaltet!");
-}
-if (incomingByte == 'q')
-{
-sendCode(mygroup, 0, true);
-}
-if (incomingByte == 'a')
-{
-sendCode(mygroup, 0, false);
-}
-if (incomingByte == 'w')
-{
-sendCode(mygroup, 1, true);
-}
-if (incomingByte == 's')
-{
-sendCode(mygroup, 1, false);
-}
-if (incomingByte == 'e')
-{
-sendCode(mygroup, 2, true);
-}
-if (incomingByte == 'd')
-{
-sendCode(mygroup, 2, false);
-}
-if (incomingByte == 'x')
-{
-if (b_debug){
-b_debug = false;
-} else {
-b_debug = true;
-}
-}
-
-if (incomingByte == 't')
-{
-float h = dht.readHumidity();     //Luftfeuchte auslesen
-float t = dht.readTemperature();  //Temperatur auslesen
-if (isnan(t) || isnan(h))
-{
-Serial.println("DHT22 konnte nicht ausgelesen werden");
-}
-else
-{
-Serial.print("Luftfeuchte: ");
-Serial.print(h);
-Serial.print(" %\t");
-Serial.print("Temperatur: ");
-Serial.print(t);
-Serial.println(" C");
-}
-}
-i_time=millis();
-if(b_debug) {
-Serial.print("Runtime: ");
-Serial.println(i_time);
-}
-}
-*/
 }
