@@ -17,6 +17,17 @@ unsigned long mygroup=14360270UL;
 boolean b_debug=false;
 SerialCommand SCmd;
 
+typedef struct {
+  bool LED1;
+  bool IT1;
+  bool IT2;
+  bool IT3;
+  float temp;
+  float hum;
+} mystateType;
+
+mystateType mystate;
+
 void debuglog(char s_message[]){
   if(b_debug){
     Serial.println(s_message);
