@@ -17,6 +17,18 @@ unsigned long mygroup=14360270UL;
 boolean b_debug=false;
 SerialCommand SCmd;
 
+//Preparation for Configuration
+typedef struct {
+  unsigned long ITgroup;
+  boolean debug;
+  byte myledPin;
+  byte dhtPin;
+  byte txPin;
+  byte rxPin;
+  char* configVersion;
+} myConfigType;
+
+//Internal State Structure for storing last state set or received
 typedef struct {
   bool LED1;
   bool IT1;
