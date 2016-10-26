@@ -13,7 +13,12 @@ Supported actors
 - 4 channels for controlling pumps
 
 
-## HTTP Integration into FHEM
+## Suported Devices
+Currently the following devices are supported:
+- DHT - for an external connected DHT sensor (getstate and getreading + timer based updates of readings (60sec))
+- LED - for the builtin LED (getstate and setstate)
+- IT1, IT2, IT3 - for controlling 3 433Mhz Intertechno powerswitches (getstate and getreading + automatic state updates when a code is received)
+
 
 ## Serial Command Line Interface
 ### Command Format
