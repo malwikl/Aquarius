@@ -35,7 +35,7 @@ void process_getreading_command()
       {
         Serial.print("READING DHT Humidity ");
         Serial.print(h);
-        Serial.print(" %\t");
+        Serial.println(" %\t");
         Serial.print("READING DHT Temperature ");
         Serial.println(t);
       }
@@ -55,6 +55,11 @@ void process_getreading_command()
     else if (strcmp(arg, "LED") == 0) {
       Serial.print("READING LED state ");
       Serial.println(BoolToString(mystate.LED1));
+    }
+    else if (strcmp(arg, "TEMP1") == 0) {
+      sensors.requestTemperatures(); // Temp abfragen
+      Serial.print("READING TEMP1 Temperature ");
+      Serial.println(sensors.getTempCByIndex(0));
     }
     else {
       Serial.println("INFO Unkown Device");

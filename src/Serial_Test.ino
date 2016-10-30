@@ -4,18 +4,25 @@
 #include <NewRemoteReceiver.h>
 #include <SoftwareSerial.h>
 #include <SerialCommand.h>
+#include <OneWire.h>
+#include <DallasTemperature.h>
+#include "TimerOne.h"
 
 #define DHTPIN 9
 #define DHTTYPE DHT21 //DHT11, DHT21, DHT22
 #define ledPin LED_BUILTIN
+#define ONE_WIRE_BUS 5 /* Digitalport Pin 5 definieren */
 
-
+int readingfrequency=60;
 int incomingByte;
 DHT dht(DHTPIN, DHTTYPE);
 unsigned long i_time;
 unsigned long mygroup=14360270UL;
 boolean b_debug=false;
 SerialCommand SCmd;
+OneWire ourWire(ONE_WIRE_BUS); /* Ini oneWire instance */
+DallasTemperature sensors(&ourWire);
+
 
 //Preparation for Configuration
 typedef struct {
@@ -97,8 +104,39 @@ void showCode(NewRemoteCode receivedCode) {
   Serial.println("us.");
 }
 
+void adresseAusgeben(void) {
+  byte i;
+  byte present = 0;
+  byte data[12];
+  byte addr[8];
 
+  Serial.print("Suche 1-Wire-Devices...\n\r");// "\n\r" is NewLine
+  while(ourWire.search(addr)) {
+    Serial.print("\n\r\n\r1-Wire-Device gefunden mit Adresse:\n\r");
+    for( i = 0; i < 8; i++) {
+      Serial.print("0x");
+      if (addr[i] < 16) {
+        Serial.print('0');
+      }
+      Serial.print(addr[i], HEX);
+      if (i < 7) {
+        Serial.print(", ");
+      }
+    }
+    if ( OneWire::crc8( addr, 7) != addr[7]) {
+      Serial.print("CRC is not valid!\n\r");
+      return;
+    }
+  }
+  Serial.println();
+  ourWire.reset_search();
+  return;
+}
 
+void getTimedReading(){
+
+  adresseAusgeben();
+}
 void setup() {
 
   Serial.begin(9600);
@@ -107,11 +145,18 @@ void setup() {
   SCmd.addCommand("setstate",process_setstate_command);  // Converts two arguments to integers and echos them back
   SCmd.addCommand("getreading",process_getreading_command);  // Converts two arguments to integers and echos them back
   SCmd.addDefaultHandler(unrecognized);  // Handler for command that isn't matched  (says "What?")
-  Serial.println("Ready");
+  //Serial.println("Ready");
+
+  //Initialize Sensors and Actors
   pinMode(ledPin, OUTPUT);
   dht.begin();
   NewRemoteReceiver::init(0, 2, showCode);
+  sensors.begin();/* Inizialisieren der Dallas Temperature library */
+  //adresseAusgeben(); /* Adresse der OneWire Devices ausgeben */
 
+  //Triggered readings
+  //Timer1.initialize(readingfrequency*1000000);
+  //Timer1.attachInterrupt(getTimedReading);
 }
 
 void loop() {
