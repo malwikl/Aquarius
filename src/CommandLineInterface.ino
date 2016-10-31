@@ -25,20 +25,7 @@ void process_getreading_command()
   if (arg != NULL)      // As long as it existed, take it
   {
     if (strcmp(arg, "DHT") == 0) {
-      float h = dht.readHumidity();     //Luftfeuchte auslesen
-      float t = dht.readTemperature();  //Temperatur auslesen
-      if (isnan(t) || isnan(h))
-      {
-        Serial.println("READING DHT DHT_READ_ERROR");
-      }
-      else
-      {
-        Serial.print("READING DHT Humidity ");
-        Serial.print(h);
-        Serial.println(" %\t");
-        Serial.print("READING DHT Temperature ");
-        Serial.println(t);
-      }
+        getDHTReading();
     }
     else if (strcmp(arg, "IT1") == 0) {
       Serial.print("READING IT1 state ");
@@ -57,9 +44,7 @@ void process_getreading_command()
       Serial.println(BoolToString(mystate.LED1));
     }
     else if (strcmp(arg, "TEMP1") == 0) {
-      sensors.requestTemperatures(); // Temp abfragen
-      Serial.print("READING TEMP1 Temperature ");
-      Serial.println(sensors.getTempCByIndex(0));
+        getDS18B20Reading();
     }
     else {
       Serial.println("INFO Unkown Device");
