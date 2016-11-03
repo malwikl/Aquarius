@@ -25,7 +25,20 @@ void process_getreading_command()
   if (arg != NULL)      // As long as it existed, take it
   {
     if (strcmp(arg, "DHT") == 0) {
-        getDHTReading();
+        arg = SCmd.next();
+        if (arg != NULL)      // As long as it existed, take it
+        {
+          if (strcmp(arg, "temperature") == 0) {
+            getDHTTemperature();
+          }
+          else if (strcmp(arg, "humidty") == 0) {
+            getDHTHumidity();
+          } else {
+            Serial.println("READING DHT state DHT_ERROR_UNKOWN_READING");
+          }
+        } else {
+          Serial.println("READING DHT state DHT_ERROR_UNKOWN_READING");
+        }
     }
     else if (strcmp(arg, "IT1") == 0) {
       Serial.print("READING IT1 state ");
@@ -44,7 +57,7 @@ void process_getreading_command()
       Serial.println(BoolToString(mystate.LED1));
     }
     else if (strcmp(arg, "TEMP1") == 0) {
-        getDS18B20Reading();
+        getDS18B20Temperature();
     }
     else {
       Serial.println("INFO Unkown Device");
