@@ -57,7 +57,6 @@ void setup() {
 
   Serial.begin(9600);
 
-  SCmd.addCommand("getstate",process_getstate_command);  // Converts two arguments to integers and echos them back
   SCmd.addCommand("setstate",process_setstate_command);  // Converts two arguments to integers and echos them back
   SCmd.addCommand("getreading",process_getreading_command);  // Converts two arguments to integers and echos them back
   SCmd.addDefaultHandler(unrecognized);  // Handler for command that isn't matched  (says "What?")

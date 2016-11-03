@@ -55,49 +55,6 @@ void process_getreading_command()
   }
 }
 
-void process_getstate_command()
-{
-  char *arg;
-  arg = SCmd.next();    // Get the next argument from the SerialCommand object buffer
-
-  if (arg != NULL)      // As long as it existed, take it
-  {
-
-    if (strcmp(arg, "DHT") == 0) {
-      float h = dht.readHumidity();     //Luftfeuchte auslesen
-      float t = dht.readTemperature();  //Temperatur auslesen
-      if (isnan(t) || isnan(h))
-      {
-        Serial.println("STATE DHT DHT_READ_ERROR");
-      }
-      else
-      {
-        Serial.println("STATE DHT OK ");
-      }
-    }
-    else if (strcmp(arg, "IT1") == 0) {
-      Serial.print("STATE IT1 ");
-      Serial.println(BoolToString(mystate.IT1));
-    }
-    else if (strcmp(arg, "IT2") == 0) {
-      Serial.print("STATE IT2 ");
-      Serial.println(BoolToString(mystate.IT2));
-    }
-    else if (strcmp(arg, "IT3") == 0) {
-      Serial.print("STATE IT3 ");
-      Serial.println(BoolToString(mystate.IT3));
-    }
-    else if (strcmp(arg, "LED") == 0) {
-      Serial.print("STATE LED ");
-      Serial.println(BoolToString(mystate.LED1));
-    }
-    else {
-      Serial.println("INFO Unkown Device");
-    }
-  } else {
-    Serial.println("INFO No Device specified");
-  }
-}
 
 void process_setstate_command()
 {

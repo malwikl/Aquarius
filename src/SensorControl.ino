@@ -83,9 +83,8 @@ void getDS18B20Reading () {
 
   float t = sensors.getTempCByIndex(0);
   sensors.requestTemperatures(); // Temp abfragen
-  Serial.print("READING TEMP1 Temperature ");
-  Serial.print(t);
-  Serial.print("\r\n");
+  Serial.print("READING TEMP1 temperature ");
+  Serial.println(t);
   delay(200);
 }
 void getDHTReading () {
@@ -93,18 +92,15 @@ void getDHTReading () {
   float t = dht.readTemperature();  //Temperatur auslesen
   if (isnan(t) || isnan(h))
   {
-    Serial.print("READING DHT DHT_READ_ERROR");
-    Serial.print("\r\n");
+    Serial.println("READING DHT DHT_READ_ERROR");
   }
   else
   {
-    //Serial.print("READING DHT Humidity ");
-    //Serial.print(h);
-    //Serial.print("\r\n");
+    //Serial.print("READING DHT humidity ");
+    //Serial.println(h);
     //delay(200);
-    Serial.print("READING DHT Temperature ");
-    Serial.print(t);
-    Serial.print("\r\n");
+    Serial.print("READING DHT temperature ");
+    Serial.println(t);
     delay(200);
   }
 }
