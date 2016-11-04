@@ -79,7 +79,7 @@ void adresseAusgeben(void) {
   return;
 }
 
-void getDS18B20Temperarture () {
+void getDS18B20Temperature () {
 
   float t = sensors.getTempCByIndex(0);
   sensors.requestTemperatures(); // Temp abfragen

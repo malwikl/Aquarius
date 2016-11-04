@@ -21,37 +21,37 @@ Currently the following devices are supported:
 - TEMP1 - for reading temperature from a DS18B20
 
 ## Supported Readings
-- temperature (for TEMP1 and DHT)
-- humidity (for DHT)
+- temp (for TEMP1 and DHT)
+- hum(for DHT)
 - state (for all types)
 
 ## Serial Command Line Interface
 ### Command Format
 ```
-getreading <DEVICE> <READING>
+get <DEVICE> <READING>
 
-setstate <DEVICE> <STATE>
+set <DEVICE> <STATE>
 ```
 
 Some examples
 ```
-getreading IT1 state
+get IT1 state
 --> READING IT1 state OFF
 ```
 
 ```
-setstate IT1 ON
+set IT1 ON
 --> STATE IT1 ON
 ```
 
 ```
-getreading DHT state
+get DHT state
 --> READING DHT state T: 21.2 H: 55.3
 ```
 
 ```
-getreading DHT temperature
+get DHT temperature
 --> READING DHT temperature 21.2
-getreading DHT humidity
+get DHT humidity
 --> READING DHT humidity 55.3
 ```

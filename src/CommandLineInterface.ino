@@ -7,9 +7,8 @@ Contains handling of command line interface
 void unrecognized()
 {
   Serial.println("INFO What? You can try the following, of course without the INFO");
-  Serial.println("INFO setstate <device> <ON:OFF>");
-  Serial.println("INFO getstate <device>");
-  Serial.println("INFO getreading <device>");
+  Serial.println("INFO set <device> <ON:OFF>");
+  Serial.println("INFO get <device>");
 }
 
 inline const char * const BoolToString(bool b)
@@ -28,10 +27,10 @@ void process_getreading_command()
         arg = SCmd.next();
         if (arg != NULL)      // As long as it existed, take it
         {
-          if (strcmp(arg, "temperature") == 0) {
+          if (strcmp(arg, "temp") == 0) {
             getDHTTemperature();
           }
-          else if (strcmp(arg, "humidty") == 0) {
+          else if (strcmp(arg, "hum") == 0) {
             getDHTHumidity();
           } else {
             Serial.println("READING DHT state DHT_ERROR_UNKOWN_READING");
